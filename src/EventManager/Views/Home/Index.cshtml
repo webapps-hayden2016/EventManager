@@ -7,12 +7,24 @@
 
 @if (SignInManager.IsSignedIn(User) && ViewBag.ArtistName != "")
 {
-    <h1 class="jumbotron">Welcome, @ViewBag.ArtistName!</h1>
-    
+    <div class="jumbotron">
+        <h1>Welcome, @ViewBag.ArtistName!</h1>
+        <h2>You are a registered Artist.</h2>
+    </div>
+    <div>
+        <a href="/Events" class="btn btn-primary">My Events</a>
+    </div>
+
 }
 else if (SignInManager.IsSignedIn(User) && ViewBag.ArtistName == "")
 {
-    <h1 class="jumbotron">Welcome, @ViewBag.ArtistName!</h1>
+    <div class="jumbotron">
+        <h1>Welcome, @UserManager.GetUserName(User)!</h1>
+        <h2>You are a regular User.</h2>
+    </div>
+    <div>
+        <a href="/Events" class="btn btn-primary">Events I'm Attending</a>
+    </div>
 
 }
 else

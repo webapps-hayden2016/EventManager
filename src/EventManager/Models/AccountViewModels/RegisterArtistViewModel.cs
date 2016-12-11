@@ -9,6 +9,7 @@ namespace EventManager.Models.AccountViewModels
     public class RegisterArtistViewModel
     {
         [Required]
+        [Display(Name = "Name")]
         public string ArtistName { get; set; }
 
         [Required]
