@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace EventManager.Models.AccountViewModels
 {
-    public class RegisterViewModel
+    public class RegisterArtistViewModel
     {
+        [Required]
+        public string ArtistName { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
