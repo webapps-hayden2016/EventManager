@@ -11,8 +11,8 @@ namespace EventManager.Models
     {
         public string ArtistName { get; set; }
 
-        //public List<string> Following { get; set; }
+        //public List<String> Following { get; set; }
 
-        //public List<Event> Performances { get; set; }
+        public List<UserEvent> UserEvents { get; set; }
     }
 }

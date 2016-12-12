@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using EventManager.Data;
 using Microsoft.AspNetCore.Identity;
 using EventManager.Models;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -58,16 +59,16 @@ namespace EventManager.Controllers
                     events = events.OrderByDescending(e => e.Genre);
                     break;
                 case "Date":
-                    events = events.OrderBy(e => e.Date);
+                    events = events.OrderBy(e => e.Date.ToString("MMMM d, yyyy"));
                     break;
                 case "date_desc":
-                    events = events.OrderByDescending(e => e.Date);
+                    events = events.OrderByDescending(e => e.Date.ToString("MMMM d, yyyy"));
                     break;
                 case "Time":
-                    events = events.OrderBy(e => e.Time);
+                    events = events.OrderBy(e => e.Time.ToString("h:mm tt"));
                     break;
                 case "time_desc":
-                    events = events.OrderByDescending(e => e.Time);
+                    events = events.OrderByDescending(e => e.Time.ToString("h:mm tt"));
                     break;
                 case "Location":
                     events = events.OrderBy(e => e.Location);
@@ -97,53 +98,53 @@ namespace EventManager.Controllers
             ViewBag.TimeSort = sortOrder == "Time" ? "time_desc" : "Time";
             ViewBag.LocationSort = sortOrder == "Location" ? "location_desc" : "Location";
 
-            var events = from m in _context.Events
+            var eventList = from m in _context.Events
                          select m;
 
-            events = events.Where(e => e.Artist.Contains(user.ArtistName));
+            eventList = eventList.Where(e => e.Artist.Contains(user.ArtistName) && e.IsActive == true);
 
 
             switch (sortOrder)
             {
                 case "name_desc":
-                    events = events.OrderByDescending(e => e.Name);
+                    eventList = eventList.OrderByDescending(e => e.Name);
                     break;
                 case "Artist":
-                    events = events.OrderBy(e => e.Artist);
+                    eventList = eventList.OrderBy(e => e.Artist);
                     break;
                 case "artist_desc":
-                    events = events.OrderByDescending(e => e.Artist);
+                    eventList = eventList.OrderByDescending(e => e.Artist);
                     break;
                 case "Genre":
-                    events = events.OrderBy(e => e.Genre);
+                    eventList = eventList.OrderBy(e => e.Genre);
                     break;
                 case "genre_desc":
-                    events = events.OrderByDescending(e => e.Genre);
+                    eventList = eventList.OrderByDescending(e => e.Genre);
                     break;
                 case "Date":
-                    events = events.OrderBy(e => e.Date.ToString("MMMM d, yyyy"));
+                    eventList = eventList.OrderBy(e => e.Date.ToString("MMMM d, yyyy"));
                     break;
                 case "date_desc":
-                    events = events.OrderByDescending(e => e.Date.ToString("MMMM d, yyyy"));
+                    eventList = eventList.OrderByDescending(e => e.Date.ToString("MMMM d, yyyy"));
                     break;
                 case "Time":
-                    events = events.OrderBy(e => e.Time.ToString("h:mm tt"));
+                    eventList = eventList.OrderBy(e => e.Time.ToString("h:mm tt"));
                     break;
                 case "time_desc":
-                    events = events.OrderByDescending(e => e.Time.ToString("h:mm tt"));
+                    eventList = eventList.OrderByDescending(e => e.Time.ToString("h:mm tt"));
                     break;
                 case "Location":
-                    events = events.OrderBy(e => e.Location);
+                    eventList = eventList.OrderBy(e => e.Location);
                     break;
                 case "location_desc":
-                    events = events.OrderByDescending(e => e.Location);
+                    eventList = eventList.OrderByDescending(e => e.Location);
                     break;
                 default:
-                    events = events.OrderBy(e => e.Name);
+                    eventList = eventList.OrderBy(e => e.Name);
                     break;
             }
 
-            return View(events.ToList());
+            return View(eventList.ToList());
         }
 
         public IActionResult Create()
@@ -160,6 +161,7 @@ namespace EventManager.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Event anEvent)
         {
+            anEvent.IsActive = true;
             if (ModelState.IsValid)
             {
                 _context.Events.Add(anEvent);
@@ -167,6 +169,23 @@ namespace EventManager.Controllers
                 return RedirectToAction("Index");
             }
             return View(anEvent);
+        }
+
+        public IActionResult Remove(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                var anEvent = _context.Events.Single(e => e.EventID == id);
+                anEvent.IsActive = false;
+                _context.Entry(anEvent).State = EntityState.Modified;
+                _context.SaveChanges();
+            }
+            return RedirectToAction("MyEvents"); 
         }
     }
 }

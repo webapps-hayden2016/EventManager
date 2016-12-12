@@ -16,13 +16,23 @@ namespace EventManager.Data
         }
 
         public DbSet<Event> Events { get; set; }
+        public DbSet<UserEvent> UserEvents { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(builder);
-            // Customize the ASP.NET Identity model and override the defaults if needed.
-            // For example, you can rename the ASP.NET Identity table names and more.
-            // Add your customizations after calling base.OnModelCreating(builder);
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<UserEvent>()
+                .HasKey(t => new { t.EventID, t.UserID });
+
+            modelBuilder.Entity<UserEvent>()
+                .HasOne(ue => ue.Event)
+                .WithMany(e => e.UserEvents)
+                .HasForeignKey(ue => ue.EventID);
+
+            modelBuilder.Entity<UserEvent>()
+                .HasOne(ue => ue.User)
+                .WithMany(u => u.UserEvents)
+                .HasForeignKey(ue => ue.UserID);
         }
     }
 }

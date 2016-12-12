@@ -8,9 +8,10 @@ using EventManager.Data;
 namespace EventManager.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20161212210448_fourthMigration")]
+    partial class fourthMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -72,6 +73,8 @@ namespace EventManager.Data.Migrations
                     b.Property<int>("EventID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("ApplicationUserId");
+
                     b.Property<string>("Artist");
 
                     b.Property<DateTime>("Date");
@@ -88,22 +91,9 @@ namespace EventManager.Data.Migrations
 
                     b.HasKey("EventID");
 
+                    b.HasIndex("ApplicationUserId");
+
                     b.ToTable("Events");
-                });
-
-            modelBuilder.Entity("EventManager.Models.UserEvent", b =>
-                {
-                    b.Property<int>("EventID");
-
-                    b.Property<string>("UserID");
-
-                    b.HasKey("EventID", "UserID");
-
-                    b.HasIndex("EventID");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("UserEvents");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
@@ -213,17 +203,11 @@ namespace EventManager.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("EventManager.Models.UserEvent", b =>
+            modelBuilder.Entity("EventManager.Models.Event", b =>
                 {
-                    b.HasOne("EventManager.Models.Event", "Event")
-                        .WithMany("UserEvents")
-                        .HasForeignKey("EventID")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("EventManager.Models.ApplicationUser", "User")
-                        .WithMany("UserEvents")
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("EventManager.Models.ApplicationUser")
+                        .WithMany("Events")
+                        .HasForeignKey("ApplicationUserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>

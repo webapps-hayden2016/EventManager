@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "My Events";
 }
-
+<!-- For Artist ONLY-->
 <h2>Events</h2>
 <hr />
 <p>
@@ -13,12 +13,12 @@
 
 <table class="table">
     <tr>
-        <th>@Html.ActionLink("Name", "Index", new { sortOrder = ViewBag.NameSort })</th>
-        <th>@Html.ActionLink("Artist Name", "Index", new { sortOrder = ViewBag.ArtistSort })</th>
-        <th>@Html.ActionLink("Genre", "Index", new { sortOrder = ViewBag.GenreSort })</th>
-        <th>@Html.ActionLink("Date", "Index", new { sortOrder = ViewBag.DateSort })</th>
-        <th>@Html.ActionLink("Time", "Index", new { sortOrder = ViewBag.TimeSort })</th>
-        <th>@Html.ActionLink("Location", "Index", new { sortOrder = ViewBag.LocationSort })</th>
+        <th>@Html.ActionLink("Name", "MyEvents", new { sortOrder = ViewBag.NameSort })</th>
+        <th>@Html.ActionLink("Artist Name", "MyEvents", new { sortOrder = ViewBag.ArtistSort })</th>
+        <th>@Html.ActionLink("Genre", "MyEvents", new { sortOrder = ViewBag.GenreSort })</th>
+        <th>@Html.ActionLink("Date", "MyEvents", new { sortOrder = ViewBag.DateSort })</th>
+        <th>@Html.ActionLink("Time", "MyEvents", new { sortOrder = ViewBag.TimeSort })</th>
+        <th>@Html.ActionLink("Location", "MyEvents", new { sortOrder = ViewBag.LocationSort })</th>
     </tr>
 
     @foreach (var item in Model)
@@ -30,13 +30,10 @@
             <td>@item.Date.ToString("MMMM d, yyyy")</td>
             <td>@item.Time.ToString("h:mm tt")</td>
             <td>@Html.DisplayFor(modelItem => item.Location)</td>
-            @*<td>
-                    <a asp-action="Likes" asp-route-id="@item.AlbumID" class="btn btn-warning">Like</a>
-                    <a asp-controller="Playlists" asp-action="AddToPlaylist" asp-route-id="@item.AlbumID" class="btn btn-default">Playlist +</a>
-                    <a asp-action="Edit" asp-route-id="@item.AlbumID" class="btn btn-default">Edit</a>
-                    <a asp-action="Details" asp-route-id="@item.AlbumID" class="btn btn-default">Details</a>
-                    <a asp-action="Delete" asp-route-id="@item.AlbumID" class="btn btn-danger">Delete</a>
-                </td>*@
+            <td>
+                    <a asp-action="Edit" asp-route-id="@item.EventID" class="btn btn-default">Edit</a>
+                    <a asp-action="Remove" asp-route-id="@item.EventID" class="btn btn-danger">Remove</a>
+            </td>
         </tr>
     }
 </table>

@@ -22,5 +22,7 @@ namespace EventManager.Models
         public string Genre { get; set; }
 
         public bool IsActive { get; set; }
+
+        public List<UserEvent> UserEvents { get; set; }
     }
 }
