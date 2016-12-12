@@ -12,7 +12,7 @@
         <h2>You are a registered Artist.</h2>
     </div>
     <div>
-        <a href="/Events" class="btn btn-primary">My Events</a>
+        <a href="/Events/MyEvents" class="btn btn-primary">My Events</a>
     </div>
 
 }
@@ -23,7 +23,8 @@ else if (SignInManager.IsSignedIn(User) && ViewBag.ArtistName == "")
         <h2>You are a regular User.</h2>
     </div>
     <div>
-        <a href="/Events" class="btn btn-primary">Events I'm Attending</a>
+        <a href="/Events/AttendingEvents" class="btn btn-primary">Events I'm Attending</a>
+        <a href="/Events" class="btn btn-success">All Events</a>
     </div>
 
 }
