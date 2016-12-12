@@ -1,18 +1,15 @@
 ﻿@model IEnumerable<EventManager.Models.Event>
 
-@{ 
-    ViewBag.Title = "Events";
+@{
+    ViewBag.Title = "My Events";
 }
 
 <h2>Events</h2>
 <hr />
-
-<form asp-controller="Events" asp-action="Index">
-    <p>
-        Search: <input class="form-control valid" type="text" name="searchString">
-        <input class="btn btn-default" type="submit" value="Search" />
-    </p>
-</form>
+<p>
+    <a asp-controller="Events" asp-action="Create" class="btn btn-info">Create New</a>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-default">Return to Homepage</a>
+</p>
 
 <table class="table">
     <tr>
@@ -30,16 +27,16 @@
             <td>@Html.DisplayFor(modelItem => item.Name)</td>
             <td>@Html.DisplayFor(modelItem => item.Artist)</td>
             <td>@Html.DisplayFor(modelItem => item.Genre)</td>
-            <td>@Html.DisplayFor(modelItem => item.Date)</td>
-            <td>@Html.DisplayFor(modelItem => item.Time)</td>
+            <td>@item.Date.ToString("MMMM d, yyyy")</td>
+            <td>@item.Time.ToString("h:mm tt")</td>
             <td>@Html.DisplayFor(modelItem => item.Location)</td>
             @*<td>
-                <a asp-action="Likes" asp-route-id="@item.AlbumID" class="btn btn-warning">Like</a>
-                <a asp-controller="Playlists" asp-action="AddToPlaylist" asp-route-id="@item.AlbumID" class="btn btn-default">Playlist +</a>
-                <a asp-action="Edit" asp-route-id="@item.AlbumID" class="btn btn-default">Edit</a>
-                <a asp-action="Details" asp-route-id="@item.AlbumID" class="btn btn-default">Details</a>
-                <a asp-action="Delete" asp-route-id="@item.AlbumID" class="btn btn-danger">Delete</a>
-            </td>*@
+                    <a asp-action="Likes" asp-route-id="@item.AlbumID" class="btn btn-warning">Like</a>
+                    <a asp-controller="Playlists" asp-action="AddToPlaylist" asp-route-id="@item.AlbumID" class="btn btn-default">Playlist +</a>
+                    <a asp-action="Edit" asp-route-id="@item.AlbumID" class="btn btn-default">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.AlbumID" class="btn btn-default">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.AlbumID" class="btn btn-danger">Delete</a>
+                </td>*@
         </tr>
     }
 </table>
