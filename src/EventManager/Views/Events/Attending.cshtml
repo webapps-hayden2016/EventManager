@@ -1,12 +1,12 @@
 ﻿@model IEnumerable<EventManager.Models.Event>
 
-@{ 
-    ViewBag.Title = "All Events";
+@{
+    ViewBag.Title = "Events I'm Attending";
 }
 
-<h2>All Events</h2>
+<h2>Events I'm Attending</h2>
 <hr />
-<!-- For all users-->
+<!-- For standard Users-->
 <p>
     <a asp-controller="Home" asp-action="Index" class="btn btn-default">Return to Homepage</a>
 </p>
@@ -25,6 +25,7 @@
         <th>@Html.ActionLink("Date", "Index", new { sortOrder = ViewBag.DateSort })</th>
         <th>@Html.ActionLink("Time", "Index", new { sortOrder = ViewBag.TimeSort })</th>
         <th>@Html.ActionLink("Location", "Index", new { sortOrder = ViewBag.LocationSort })</th>
+        <th></th>
     </tr>
 
     @foreach (var item in Model)
@@ -36,8 +37,17 @@
             <td>@item.Date.ToString("MMMM d, yyyy")</td>
             <td>@item.Time.ToString("h:mm tt")</td>
             <td>@Html.DisplayFor(modelItem => item.Location)</td>
+            @if (item.IsActive == false)
+            {
+                <td style="color:red">Canceled</td>
+            }
+            else
+            {
+                <td></td>
+
+            }
             <td>
-                <a asp-action="Attend" asp-route-id="@item.EventID" class="btn btn-info">Attend</a>
+                <a asp-action="Cancel" asp-route-id="@item.EventID" class="btn btn-danger">Cancel</a>
             </td>
         </tr>
     }

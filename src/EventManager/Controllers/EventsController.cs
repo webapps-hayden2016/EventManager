@@ -33,8 +33,9 @@ namespace EventManager.Controllers
             ViewBag.TimeSort = sortOrder == "Time" ? "time_desc" : "Time";
             ViewBag.LocationSort = sortOrder == "Location" ? "location_desc" : "Location";
 
-            var events = from m in _context.Events
-                         select m;
+            var events = from e in _context.Events
+                         where e.IsActive == true
+                         select e;
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -166,7 +167,7 @@ namespace EventManager.Controllers
             {
                 _context.Events.Add(anEvent);
                 _context.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("MyEvents");
             }
             return View(anEvent);
         }
@@ -186,6 +187,75 @@ namespace EventManager.Controllers
                 _context.SaveChanges();
             }
             return RedirectToAction("MyEvents"); 
+        }
+        
+        public IActionResult Attend(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var userId = _userManager.GetUserId(User);
+            var user = _context.Users.Single(u => u.Id == userId);
+            var eventx = _context.Events.Single(e => e.EventID == id);
+            UserEvent userEvent = new UserEvent();
+            userEvent.UserID = userId;
+            userEvent.EventID = eventx.EventID;
+            _context.UserEvents.Add(userEvent);
+            UpdateEvent(eventx, userEvent);
+            UpdateUser(user, userEvent);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        public void UpdateEvent(Event eventx, UserEvent userEvent)
+        {
+            eventx.UserEvents.Add(userEvent);
+            _context.Entry(eventx).State = EntityState.Modified;
+            _context.SaveChanges();
+        }
+
+        public void UpdateUser(ApplicationUser user, UserEvent userEvent)
+        {
+            user.UserEvents.Add(userEvent);
+            _context.Entry(user).State = EntityState.Modified;
+            _context.SaveChanges();
+        }
+
+        public IActionResult Attending()
+        {
+            var userId = _userManager.GetUserId(User);
+            var user = _context.Users.Single(u => u.Id == userId);
+
+            var userevents = from e in _context.UserEvents.Include(e => e.Event)
+                         where e.UserID == userId
+                         select e;
+            List<Event> eventList = new List<Event>();
+
+            foreach(var eventx in userevents)
+            {
+                eventList.Add(eventx.Event);
+            }
+
+            return View(eventList);
+        }
+
+        public IActionResult Cancel(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var eventx = _context.Events.Single(e => e.EventID == id);
+            var userId = _userManager.GetUserId(User);
+            var user = _context.Users.Single(u => u.Id == userId);
+
+            var userevent = _context.UserEvents.Single(ue => ue.EventID == eventx.EventID && ue.UserID == userId);
+            _context.UserEvents.Remove(userevent);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
         }
     }
 }
