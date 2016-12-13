@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<EventManager.Models.Event>
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -26,6 +27,29 @@ else if (SignInManager.IsSignedIn(User) && ViewBag.ArtistName == "")
     <div>
         <a href="/Events" class="btn btn-success">All Events</a>
         <a href="/Events/Attending" class="btn btn-primary">Events I'm Attending</a>
+    </div>
+    <div class="col-md-5">
+        <h2>This Week - Attending</h2>
+        <div>
+            @foreach(var item in Model){ 
+                <div>
+                    <p>@item.Date.ToString("dddd, MMMM d, yyyy") - @item.Time.ToString("h:mm tt")</p>
+                    <p>@item.Name</p>
+                    <p>@item.Artist</p>
+                    @if(item.IsActive == false)
+                    {
+                        <p style="color:red">CANCELED</p>
+
+                    }
+                    else
+                    {
+                        <p></p>
+
+                    }
+                </div>
+                <br />
+            }
+        </div>
     </div>
 
 }

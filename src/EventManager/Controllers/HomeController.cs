@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using EventManager.Data;
 using Microsoft.AspNetCore.Identity;
 using EventManager.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventManager.Controllers
 {
@@ -24,10 +25,23 @@ namespace EventManager.Controllers
 
         public IActionResult Index()
         {
+            List<Event> eventList = new List<Event>();
             if (_signinManager.IsSignedIn(User))
             {
                 var userId = _userManager.GetUserId(User);
                 var user = _context.Users.Single(u => u.Id == userId);
+
+                var userevents = from e in _context.UserEvents.Include(e => e.Event)
+                                 where e.UserID == userId
+                                 select e;
+
+                foreach(var eventx in userevents)
+                {
+                    if(eventx.Event.Date.CompareTo(DateTime.Now) >= 0 && eventx.Event.Date.CompareTo(DateTime.Now.AddDays(7)) < 0)
+                    {
+                        eventList.Add(eventx.Event);
+                    }
+                }
 
                 if (user.ArtistName == null)
                 {
@@ -38,7 +52,7 @@ namespace EventManager.Controllers
                     ViewBag.ArtistName = user.ArtistName;
                 }
             }
-            return View();
+            return View(eventList);
         }
 
         public IActionResult About()

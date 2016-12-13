@@ -7,11 +7,13 @@ using EventManager.Data;
 using Microsoft.AspNetCore.Identity;
 using EventManager.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace EventManager.Controllers
 {
+    [Authorize]
     public class EventsController : Controller
     {
         public readonly ApplicationDbContext _context;
@@ -26,6 +28,9 @@ namespace EventManager.Controllers
         // GET: /<controller>/
         public IActionResult Index(string searchString, string sortOrder)
         {
+            var userId = _userManager.GetUserId(User);
+            var user = _context.Users.Single(u => u.Id == userId);
+
             ViewBag.TitleSort = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.ArtistSort = sortOrder == "Artist" ? "artist_desc" : "Artist";
             ViewBag.GenreSort = sortOrder == "Genre" ? "genre_desc" : "Genre";
@@ -254,8 +259,34 @@ namespace EventManager.Controllers
 
             var userevent = _context.UserEvents.Single(ue => ue.EventID == eventx.EventID && ue.UserID == userId);
             _context.UserEvents.Remove(userevent);
+            UpdateEvent2(eventx, userevent);
+            UpdateUser2(user, userevent);
             _context.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Attending");
+        }
+
+        public void UpdateEvent2(Event eventx, UserEvent userEvent)
+        {
+            eventx.UserEvents.Remove(userEvent);
+            _context.Entry(eventx).State = EntityState.Modified;
+            _context.SaveChanges();
+        }
+
+        public void UpdateUser2(ApplicationUser user, UserEvent userEvent)
+        {
+            user.UserEvents.Remove(userEvent);
+            _context.Entry(user).State = EntityState.Modified;
+            _context.SaveChanges();
+        }
+
+        public IActionResult Follow(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+
         }
     }
 }

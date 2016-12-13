@@ -115,7 +115,7 @@ namespace EventManager.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { ArtistName = model.ArtistName, UserName = model.Email, Email = model.Email, UserEvents = new List<UserEvent>() };
+                var user = new ApplicationUser { ArtistName = model.ArtistName, UserName = model.Email, Email = model.Email, UserEvents = new List<UserEvent>(), Following = new List<Artist>()  };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -146,7 +146,7 @@ namespace EventManager.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, UserEvents = new List<UserEvent>() };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, UserEvents = new List<UserEvent>(), Following = new List<Artist>() };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
