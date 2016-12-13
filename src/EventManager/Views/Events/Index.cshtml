@@ -38,18 +38,11 @@
             <td>@item.Date.ToString("MMMM d, yyyy")</td>
             <td>@item.Time.ToString("h:mm tt")</td>
             <td>@Html.DisplayFor(modelItem => item.Location)</td>
-            @*@if(_context.User){ 
-                <td>
-                    <a asp-action="Cancel" asp-route-id="@item.EventID" class="btn btn-danger">Cancel</a>
-                </td>
-            }
-            else
-            {*@
-                <td>
-                    <a asp-action="Attend" asp-route-id="@item.EventID" class="btn btn-info">Attend</a>
-                    <a asp-action="Follow" asp-route-id="@item.EventID" class="btn btn-warning">Follow this Artist</a>
-                </td>
-            @*}*@
+            <td>
+                <a asp-action="Attend" asp-route-id="@item.EventID" class="btn btn-info">Attend</a>
+                <a asp-action="Cancel" asp-route-id="@item.EventID" class="btn btn-danger">Cancel</a>
+                <a asp-action="Follow" asp-route-id="@item.EventID" class="btn btn-warning">Follow this Artist</a>
+            </td>
         </tr>
     }
 </table>

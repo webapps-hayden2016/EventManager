@@ -87,6 +87,16 @@ namespace EventManager.Controllers
                     break;
             }
 
+            var userevents = from e in _context.UserEvents.Include(e => e.Event)
+                             where e.UserID == userId
+                             select e;
+
+            List<Event> eventList = new List<Event>();
+            foreach(var eventx in userevents)
+            {
+                eventList.Add(eventx.Event);
+            }
+            ViewBag.EventList = eventList;
             return View(events.ToList());
         }
 
@@ -286,7 +296,41 @@ namespace EventManager.Controllers
                 return NotFound();
             }
 
+            var eventx = _context.Events.Single(e => e.EventID == id);
+            Artist artist = new Artist();
+            artist.Name = eventx.Artist;
 
+            var userId = _userManager.GetUserId(User);
+            var user = _context.Users.Single(u => u.Id == userId);
+
+            if(user.Following.Exists(f => f == artist) == false)
+            {
+                user.Following.Add(artist);
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Unfollow(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var eventx = _context.Events.Single(e => e.EventID == id);
+            Artist artist = new Artist();
+            artist.Name = eventx.Artist;
+
+            var userId = _userManager.GetUserId(User);
+            var user = _context.Users.Single(u => u.Id == userId);
+
+            if (user.Following.Exists(f => f == artist) == true)
+            {
+                user.Following.Remove(artist);
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }
