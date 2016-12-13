@@ -39,10 +39,21 @@
             <td>@item.Time.ToString("h:mm tt")</td>
             <td>@Html.DisplayFor(modelItem => item.Location)</td>
             <td>
-                <a asp-action="Attend" asp-route-id="@item.EventID" class="btn btn-info">Attend</a>
-                <a asp-action="Cancel" asp-route-id="@item.EventID" class="btn btn-danger">Cancel</a>
+                @if (item.UserEvents == null)
+                {
+                    <a asp-action="Attend" asp-route-id="@item.EventID" class="btn btn-info">Attend</a>
+                }
+                else if (item.UserEvents.Exists(ue => ue.UserID == UserManager.GetUserId(User)))
+                {
+                    <a asp-action="Cancel" asp-route-id="@item.EventID" class="btn btn-danger">Cancel</a>
+                }
+                else
+                {
+                    <a asp-action="Attend" asp-route-id="@item.EventID" class="btn btn-info">Attend</a>
+                }
                 <a asp-action="Follow" asp-route-id="@item.EventID" class="btn btn-warning">Follow this Artist</a>
             </td>
+
         </tr>
     }
 </table>
